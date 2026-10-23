@@ -6,6 +6,9 @@ import java.util.Comparator;
 
 public class Prim {
     public static KruskalResult minimumSpanningForest(Graph graph) {
+        return minimumSpanningForest(graph, new Metrics());
+    }
+    public static KruskalResult minimumSpanningForest(Graph graph, Metrics metrics) {
         if (graph.isDirected()) {
             throw new IllegalArgumentException(
                     "MST requires an undirected graph"
@@ -16,7 +19,7 @@ public class Prim {
         boolean[] visited = new boolean[n];
 
         PriorityQueue<Edge> pq = new PriorityQueue<>(
-                Comparator.comparingInt(Edge::weight)
+                (a,b) -> { metrics.comparisons++; return Integer.compare(a.weight(), b.weight()); }
         );
 
         long totalWeight = 0;
@@ -29,7 +32,7 @@ public class Prim {
             }
 
             components++;
-            pq.add(new Edge(start, 9));
+            pq.add(new Edge(start, 0));
 
             while(!pq.isEmpty()){
                 Edge current = pq.poll();
@@ -47,6 +50,7 @@ public class Prim {
                 }
 
                 for(Edge edge : graph.neighbors(v)){
+                    metrics.edgeScans++;
                     if(!visited[edge.to()]){
                         pq.add(edge);
                     }

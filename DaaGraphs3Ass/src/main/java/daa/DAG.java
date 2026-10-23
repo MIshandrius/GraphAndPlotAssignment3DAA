@@ -5,6 +5,9 @@ import java.util.Arrays;
 
 public class DAG {
     public static DagResult shortestPaths(Graph graph){
+        return shortestPaths(graph, new Metrics());
+    }
+    public static DagResult shortestPaths(Graph graph, Metrics metrics){
         int n = graph.size();
         int[] order = Kahn.topologicalSort(graph);
         long[] dist = new long[n];
@@ -32,6 +35,7 @@ public class DAG {
             }
 
             for(Edge edge : graph.neighbors(current)){
+                metrics.edgeScans++;
                 long newDist = dist[current] + edge.weight();
 
                 if(newDist < dist[edge.to()]){

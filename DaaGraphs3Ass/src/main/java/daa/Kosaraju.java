@@ -6,6 +6,9 @@ import java.util.Arrays;
 
 public class Kosaraju {
     public static int countSCC(Graph graph){
+        return countSCC(graph, new Metrics());
+    }
+    public static int countSCC(Graph graph, Metrics metrics){
         int n = graph.size();
         boolean[] visited = new boolean[n];
 
@@ -22,6 +25,7 @@ public class Kosaraju {
                 ArrayDeque<Integer> stack = new ArrayDeque<>();
 
                 stack.push(i);
+                metrics.maxDepth = Math.max(metrics.maxDepth, stack.size());
 
                 visited[i] = true;
 
@@ -31,9 +35,11 @@ public class Kosaraju {
                     if(next[current] < graph.neighbors(current).size()){
                         Edge edge = graph.neighbors(current).get(next[current]);
                         next[current]++;
+                        metrics.edgeScans++;
 
                         if(!visited[edge.to()]){
                             stack.push(edge.to());
+                            metrics.maxDepth = Math.max(metrics.maxDepth, stack.size());
                             visited[edge.to()] = true;
                         }
                     }
@@ -71,9 +77,11 @@ public class Kosaraju {
                     int vertex = stack.pop();
 
                     for(Edge edge : reversed.neighbors(vertex)){
+                        metrics.edgeScans++;
                         if(!visited[edge.to()]){
                             visited[edge.to()] = true;
                             stack.push(edge.to());
+                            metrics.maxDepth = Math.max(metrics.maxDepth, stack.size());
                         }
                     }
 

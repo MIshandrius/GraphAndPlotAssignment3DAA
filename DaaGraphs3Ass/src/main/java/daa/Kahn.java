@@ -4,6 +4,9 @@ import java.util.ArrayDeque;
 
 public class Kahn {
     public static int[] topologicalSort(Graph graph){
+        return topologicalSort(graph, new Metrics());
+    }
+    public static int[] topologicalSort(Graph graph, Metrics metrics){
         int n = graph.size();
         int[] indegree = new int[n];
 
@@ -31,6 +34,7 @@ public class Kahn {
             count++;
 
             for(Edge edge : graph.neighbors(current)){
+                metrics.edgeScans++;
                 indegree[edge.to()]--;
 
                 if(indegree[edge.to()] == 0){
